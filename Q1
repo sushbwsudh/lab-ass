@@ -1,0 +1,82 @@
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+
+class Matrix {
+private:
+    std::vector<std::vector<int>> data;
+    int rows, cols;
+
+public:
+    Matrix(int rows, int cols) : rows(rows), cols(cols) {
+        data.resize(rows, std::vector<int>(cols, 0));
+    }
+
+    Matrix(const std::vector<std::vector<int>>& values) : rows(values.size()), cols(values[0].size()) {
+        data = values;
+    }
+
+    void fillMatrix() {
+        std::cout << "Enter matrix elements:\n";
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                std::cin >> data[i][j];
+            }
+        }
+    }
+    
+    void printMatrix() const {
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                std::cout << data[i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    Matrix operator+(const Matrix& other) const {
+        if (rows != other.rows || cols != other.cols) {
+            throw std::invalid_argument("Matrices dimensions must match for addition");
+        }
+        Matrix result(rows, cols);
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                result.data[i][j] = data[i][j] + other.data[i][j];
+            }
+        }
+        return result;
+    }
+
+    Matrix operator-(const Matrix& other) const {
+        if (rows != other.rows || cols != other.cols) {
+            throw std::invalid_argument("Matrices dimensions must match for subtraction");
+        }
+        Matrix result(rows, cols);
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                result.data[i][j] = data[i][j] - other.data[i][j];
+            }
+        }
+        return result;
+    }
+};
+
+int main() {
+    // Example usage
+    Matrix mat1(2, 2);
+    Matrix mat2(2, 2);
+    
+    mat1.fillMatrix();
+    mat2.fillMatrix();
+    
+    Matrix resultAdd = mat1 + mat2;
+    Matrix resultSub = mat1 - mat2;
+    
+    std::cout << "Matrix Addition Result:\n";
+    resultAdd.printMatrix();
+    
+    std::cout << "Matrix Subtraction Result:\n";
+    resultSub.printMatrix();
+
+    return 0;
+}
