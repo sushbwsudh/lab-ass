@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+#include <numeric>
+
+class FoodOrder {
+public:
+    std::vector<std::pair<std::string, double>> items;
+    FoodOrder() {}
+
+    FoodOrder(const std::vector<std::pair<std::string, double>>& initialItems) : items(initialItems) {}
+
+    // Overload the + operator to merge two food orders
+    FoodOrder operator+(const FoodOrder& other) const {
+        FoodOrder mergedOrder = *this; // Copy the current order
+        mergedOrder.items.insert(mergedOrder.items.end(), other.items.begin(), other.items.end()); // Append items from the other order
+        return mergedOrder;
+    }
+
+    // Calculate the total bill
+    double calculateTotal() const {
+        return std::accumulate(items.begin(), items.end(), 0.0,
+                               [](double sum, const std::pair<std::string, double>& item) {
+                                   return sum + item.second;
+                               });
+    }
+
+    // Update the order (for example, after merging)
+    void updateOrder() const {
+        // In a real system, this might involve updating the database or UI
+        std::cout << "Order updated. Current items:\n";
+        for (const auto& item : items) {
+            std::cout << "  " << item.first << ": $" << item.second << "\n";
+        }
+        std::cout << "Total: $" << calculateTotal() << "\n";
+    }
+};
+
+int main() {
+    // Example usage
+    FoodOrder order1({{"Burger", 5.99}, {"Fries", 2.99}});
+    std::cout << "Order 1:\n";
+    order1.updateOrder();
+
+    FoodOrder order2({{"Pizza", 10.99}, {"Coke", 1.99}});
+    std::cout << "\nOrder 2:\n";
+    order2.updateOrder();
+
+    // Merge the orders
+    FoodOrder mergedOrder = order1 + order2;
+    std::cout << "\nMerged Order:\n";
+    mergedOrder.updateOrder();
+
+    return 0;
+}
